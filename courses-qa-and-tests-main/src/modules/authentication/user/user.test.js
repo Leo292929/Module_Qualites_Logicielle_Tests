@@ -38,36 +38,40 @@ describe("User Service", () => {
       birthday: new Date(1997, 8, 13),
     });
   });
-});
 
-
-	
-	
-it("should trigger a bad request error when user creation", async () => {
-    try {
-      await createUser({
-        name: "Valentin R",
-      });
-      assert.fail("createUser should trigger an error.");
-    } catch (e) {
-      expect(e.name).toBe('HttpBadRequest');
-      expect(e.statusCode).toBe(400);
-    }
+  it("should trigger a bad request error when user creation", async () => {
+      try {
+        await createUser({
+          name: "Valentin R",
+        });
+        assert.fail("createUser should trigger an error.");
+      } catch (e) {
+        expect(e.name).toBe('HttpBadRequest');
+        expect(e.statusCode).toBe(400);
+      }
   });
-
-
+  
   it("should throw an error when user is too young", async () => {
-  const tooYoungBirthday = new Date();
+    const tooYoungBirthday = new Date();
 
-  await expect(
-    createUser({
-      name: "Young User",
-      birthday: tooYoungBirthday,
-    })
-  ).rejects.toMatchObject({
-    name: "HttpForbidden",
-    statusCode: 403,
+    await expect(
+      createUser({
+        name: "Young User",
+        birthday: tooYoungBirthday,
+      })
+    ).rejects.toMatchObject({
+      name: "HttpForbidden",
+      statusCode: 403,
+    });
+
+    expect(createUserInRepository).not.toHaveBeenCalled();
   });
 
-  expect(createUserInRepository).not.toHaveBeenCalled();
 });
+
+
+	
+	
+
+
+  
