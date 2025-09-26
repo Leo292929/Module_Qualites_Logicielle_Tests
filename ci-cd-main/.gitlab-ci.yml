@@ -26,3 +26,4 @@ lint:
   stage: validate
   script:
     - npm run lint
+    
