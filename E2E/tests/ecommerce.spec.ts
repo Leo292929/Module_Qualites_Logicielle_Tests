@@ -48,7 +48,7 @@ test.describe("Ecommerce's product page", () => {
     // On vérifie que le nombre de produits affichés est bien de 3
     await expect(products).toHaveCount(3);
   });
-  
+
   test("should contains product's details like title and price", async ({
     page,
   }) => {
@@ -65,4 +65,20 @@ test.describe("Ecommerce's product page", () => {
     // On vérifie que le bouton "Add to cart" est bien visible
     await expect(page.getByRole("button", { name: " Add to cart" })).toBeVisible();
   });
+
+  test("should have a cart page with the added product up to date", async ({ page }) => {
+    await page.goto("https://automationexercise.com/product_details/30");
+    await expect(page).toHaveTitle("Automation Exercise - Product Details");
+
+    await page.getByRole("button", { name: " Add to cart" }).click();
+    await page.getByRole("link", { name: "View Cart" }).click();
+
+    await expect(page).toHaveURL(/\/view_cart/);
+
+    const productRow = page.locator("tr", { hasText: "Premium Polo T-Shirts" });
+
+    await expect(productRow).toBeVisible();            
+    await expect(productRow.getByText("Rs.")).toBeVisible(); 
+    await expect(productRow.getByText("1")).toBeVisible(); 
+});
 });
