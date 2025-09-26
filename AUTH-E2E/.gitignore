@@ -1,0 +1,32 @@
+# Dépendances
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Lockfiles (si tu veux en ignorer certains, sinon garde-les)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# IDE / éditeurs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Systèmes d’exploitation
+.DS_Store
+Thumbs.db
+
+# Playwright
+test-results/
+playwright-report/
+blob-report/

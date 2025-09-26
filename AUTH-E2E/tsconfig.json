@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "useDefineForClassFields": true,
+    "lib": ["dom", "es2020"],
+    "module": "esnext",
+    "skipLibCheck": true,
+    "jsx": "react-jsx",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "strict": true
+  },
+  "include": ["src", "tests", "playwright.config.ts"]
+}
