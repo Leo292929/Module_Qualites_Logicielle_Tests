@@ -58,7 +58,7 @@ unit-test:
   stage: test
   <<: *auth_e2e
   script:
-    - npm test:e2e
+    - npm run test:e2e
   rules:
     - if: '$CI_COMMIT_TAG'
       when: never
