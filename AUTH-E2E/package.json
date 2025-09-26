@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "release": "dotenv release-it --"
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -21,5 +22,20 @@
     "playwright": "^1.47.0",
     "typescript": "^5.5.4",
     "vite": "^5.4.0"
+  },
+  "release-it": {
+    "$schema": "https://unpkg.com/release-it/schema/release-it.json",
+    "git": {
+      "commitMessage": "chore: release v${version}",
+      "requireBranch": "master"
+    },
+    "gitlab": {
+      "release": true,
+      "tokenRef": "GITLAB_TOKEN"
+    },
+    "npm": {
+      "publish": false
+    }
   }
 }
+

@@ -1,0 +1,102 @@
+image: node:latest
+
+# (Optionnel mais recommandé) — Ne créer un pipeline QUE si AUTH-E2E/ change
+workflow:
+  rules:
+    - changes:
+        - AUTH-E2E/**/*
+        - .gitlab-ci.yml   # pour prendre en compte les changements du pipeline
+      when: always
+    - when: never
+
+# Un "template" de job pour centraliser le cd et le cache
+.default_auth_e2e: &auth_e2e
+  before_script:
+    - cd AUTH-E2E
+  cache:
+    key:
+      files:
+        - AUTH-E2E/package-lock.json
+    paths:
+      - AUTH-E2E/node_modules/
+      - AUTH-E2E/.npm/
+  rules:
+    - changes:
+        - AUTH-E2E/**/*
+      when: on_success
+    - when: never
+
+stages:
+  - validate
+  - test
+  - build
+  - release
+  - deploy
+
+install:
+  stage: .pre
+  <<: *auth_e2e
+  script:
+    - npm ci --cache .npm --prefer-offline
+
+lint:
+  stage: validate
+  <<: *auth_e2e
+  script:
+    - npm run lint
+  rules:  # garde tes exclusions existantes + le filtre dossier
+    - if: '$CI_COMMIT_TAG'
+      when: never
+    - if: '$CI_COMMIT_TITLE =~ /^chore: release/'
+      when: never
+    - changes:
+        - AUTH-E2E/**/*
+      when: on_success
+    - when: never
+
+unit-test:
+  stage: test
+  <<: *auth_e2e
+  script:
+    - npm test:e2e
+  rules:
+    - if: '$CI_COMMIT_TAG'
+      when: never
+    - if: '$CI_COMMIT_TITLE =~ /^chore: release/'
+      when: never
+    - changes:
+        - AUTH-E2E/**/*
+      when: on_success
+    - when: never
+
+release:
+  stage: release
+  when: manual
+  <<: *auth_e2e
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"
+        && $CI_COMMIT_TAG == null
+        && $CI_COMMIT_TITLE !~ /^chore: release/'
+      changes:
+        - AUTH-E2E/**/*
+  before_script:
+    - git config user.email $GITLAB_USER_EMAIL
+    - git config user.name $GITLAB_USER_NAME
+    - git remote set-url origin "https://gitlab-ci-token:$GITLAB_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git"
+    - git checkout $CI_COMMIT_BRANCH
+    - git pull origin $CI_COMMIT_BRANCH --rebase
+    - cd AUTH-E2E
+  script:
+    - npx --yes release-it --ci
+
+e2e-test:
+  stage: test
+  <<: *auth_e2e
+  script:
+    - echo "Running AUTH-E2E tests..."
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - AUTH-E2E/**/*
+      when: on_success
+    - when: never
