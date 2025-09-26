@@ -44,13 +44,11 @@ describe("Account Service", () => {
   });
 
   it("createAccount échoue avec de mauvais paramètres", async () => {
-    // manque amount -> HttpBadRequest
     await expect(createAccount({ userId: 1 })).rejects.toMatchObject({
       name: "HttpBadRequest",
       statusCode: 400,
     });
 
-    // amount négatif -> HttpForbidden
     await expect(
       createAccount({ userId: 1, amount: -5 })
     ).rejects.toMatchObject({
@@ -94,7 +92,6 @@ describe("Account Service", () => {
   });
 
   it("deleteAccount échoue avec un mauvais id d'Account", async () => {
-    // on change le mock pour renvoyer null (account inexistant)
     deleteAccountInRepository.mockImplementationOnce(() => null);
 
     await expect(
@@ -109,5 +106,23 @@ describe("Account Service", () => {
       userId: 1,
       accountId: 9999,
     });
-  });
+    });
+    it("getAccounts échoue avec mauvais paramètres", async () => {
+    await expect(getAccounts({ userId: "not-a-number" })).rejects.toMatchObject({
+        name: "HttpBadRequest",
+        statusCode: 400,
+    });
+
+    expect(getAccountsFromRepository).not.toHaveBeenCalled();
+    });
+
+    it("deleteAccount échoue avec mauvais paramètres", async () => {
+    await expect(deleteAccount({ userId: "bad", accountId: "id" })).rejects.toMatchObject({
+        name: "HttpBadRequest",
+        statusCode: 400,
+    });
+
+    expect(deleteAccountInRepository).not.toHaveBeenCalled();
+    });
+
 });
