@@ -1,0 +1,28 @@
+	
+image: node:latest
+cache:
+  key:
+    files:
+      - package-lock.json
+  paths:
+    - node_modules/
+    - .npm/
+ 
+ 	
+stages:
+  - validate
+  - test
+  - build
+  - release
+  - deploy
+ 
+install:
+  stage: .pre
+  script:
+    # define cache dir & use it npm!
+    - npm ci --cache .npm --prefer-offline
+ 	
+lint:
+  stage: validate
+  script:
+    - npm run lint
