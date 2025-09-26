@@ -13,6 +13,8 @@ workflow:
 .default_auth_e2e: &auth_e2e
   before_script:
     - cd AUTH-E2E
+    - npm ci --cache .npm --prefer-offline
+    - npx playwright install --with-deps 
   cache:
     key:
       files:
