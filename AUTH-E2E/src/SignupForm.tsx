@@ -20,7 +20,7 @@ export const SignupForm: React.FC = () => {
   }
 
   return (
-    <form onSubmit={onSubmit} aria-label="Formulaire d'inscription">
+    <form noValidate onSubmit={onSubmit} aria-label="Formulaire d'inscription">
       <div style={{display:'grid', gap:12}}>
         <div>
           <label htmlFor="username">Nom d'utilisateur</label><br/>
@@ -77,3 +77,4 @@ export const SignupForm: React.FC = () => {
     </form>
   );
 };
+
