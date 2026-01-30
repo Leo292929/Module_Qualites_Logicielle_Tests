@@ -56,6 +56,15 @@ lint:
       when: on_success
     - when: never
 
+only-canary:
+  stage: validate
+  script:
+    - echo "Hello Only Canary !"
+  rules:
+    - if: '$ENV_TARGET == "canary"'
+      when: on_success
+    - when: never
+
 unit-test:
   stage: test
   <<: *auth_e2e
